@@ -75,6 +75,6 @@ func TestFizzBuzzGenerate(t *testing.T) {
 		assert.Nil(t, err)
 
 		actual := service.Generate()
-		assert.Equal(t, actual, test.expected)
+		assert.Equal(t, test.expected, actual)
 	}
 }
