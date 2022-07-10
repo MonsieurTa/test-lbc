@@ -12,19 +12,31 @@ func TestConfig(t *testing.T) {
 		expected string
 	}{
 		{
-			cfg:      Config{limit: 0},
+			cfg:      Config{Limit: 0},
 			expected: "limit must be > 0",
 		},
 		{
-			cfg:      Config{limit: -1},
+			cfg:      Config{Limit: -1},
 			expected: "limit must be > 0",
 		},
 		{
-			cfg:      Config{limit: 15, int1: 0, int2: 0, fizz: "fizz", buzz: "buzz"},
+			cfg: Config{
+				Limit: 15,
+				Int1:  0,
+				Int2:  0,
+				Fizz:  "fizz",
+				Buzz:  "buzz",
+			},
 			expected: "int1 can't 0",
 		},
 		{
-			cfg:      Config{limit: 15, int1: 1, int2: 0, fizz: "fizz", buzz: "buzz"},
+			cfg: Config{
+				Limit: 15,
+				Int1:  1,
+				Int2:  0,
+				Fizz:  "fizz",
+				Buzz:  "buzz",
+			},
 			expected: "int2 can't 0",
 		},
 	}
@@ -39,7 +51,7 @@ func TestConfig(t *testing.T) {
 }
 
 func TestFizzBuzz(t *testing.T) {
-	service, err := New(Config{limit: 1, int1: 1, int2: 1, fizz: "test", buzz: "ok"})
+	service, err := New(Config{Limit: 1, Int1: 1, Int2: 1, Fizz: "test", Buzz: "ok"})
 
 	assert.NotNil(t, service)
 	assert.Nil(t, err)
@@ -51,27 +63,63 @@ func TestFizzBuzzGenerate(t *testing.T) {
 		expected []string
 	}{
 		{
-			cfg:      Config{limit: 15, int1: 3, int2: 5, fizz: "fizz", buzz: "buzz"},
+			cfg: Config{
+				Limit: 15,
+				Int1:  3,
+				Int2:  5,
+				Fizz:  "fizz",
+				Buzz:  "buzz",
+			},
 			expected: []string{"1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz", "11", "fizz", "13", "14", "fizzbuzz"},
 		},
 		{
-			cfg:      Config{limit: 10, int1: 2, int2: 2, fizz: "fizz", buzz: "buzz"},
+			cfg: Config{
+				Limit: 10,
+				Int1:  2,
+				Int2:  2,
+				Fizz:  "fizz",
+				Buzz:  "buzz",
+			},
 			expected: []string{"1", "fizzbuzz", "3", "fizzbuzz", "5", "fizzbuzz", "7", "fizzbuzz", "9", "fizzbuzz"},
 		},
 		{
-			cfg:      Config{limit: 10, int1: 1, int2: 2, fizz: "fizz", buzz: "buzz"},
+			cfg: Config{
+				Limit: 10,
+				Int1:  1,
+				Int2:  2,
+				Fizz:  "fizz",
+				Buzz:  "buzz",
+			},
 			expected: []string{"fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz"},
 		},
 		{
-			cfg:      Config{limit: 10, int1: 1, int2: 2, fizz: "", buzz: ""},
+			cfg: Config{
+				Limit: 10,
+				Int1:  1,
+				Int2:  2,
+				Fizz:  "",
+				Buzz:  "",
+			},
 			expected: []string{"", "", "", "", "", "", "", "", "", ""},
 		},
 		{
-			cfg:      Config{limit: 10, int1: 20, int2: 20, fizz: "", buzz: ""},
+			cfg: Config{
+				Limit: 10,
+				Int1:  20,
+				Int2:  20,
+				Fizz:  "",
+				Buzz:  "",
+			},
 			expected: []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
 		},
 		{
-			cfg:      Config{limit: 10, int1: -1, int2: -2, fizz: "fizz", buzz: "buzz"},
+			cfg: Config{
+				Limit: 10,
+				Int1:  -1,
+				Int2:  -2,
+				Fizz:  "fizz",
+				Buzz:  "buzz",
+			},
 			expected: []string{"fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz"},
 		},
 	}
