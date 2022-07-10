@@ -19,6 +19,15 @@ func (c *Config) valid() error {
 	if c.limit <= 0 {
 		return errors.New("limit must be > 0")
 	}
+
+	if c.int1 == 0 {
+		return errors.New("int1 can't 0")
+	}
+
+	if c.int2 == 0 {
+		return errors.New("int2 can't 0")
+	}
+
 	return nil
 }
 
