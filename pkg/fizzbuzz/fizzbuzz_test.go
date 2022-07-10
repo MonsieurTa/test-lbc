@@ -66,6 +66,14 @@ func TestFizzBuzzGenerate(t *testing.T) {
 			cfg:      Config{limit: 10, int1: 1, int2: 2, fizz: "", buzz: ""},
 			expected: []string{"", "", "", "", "", "", "", "", "", ""},
 		},
+		{
+			cfg:      Config{limit: 10, int1: 20, int2: 20, fizz: "", buzz: ""},
+			expected: []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
+		},
+		{
+			cfg:      Config{limit: 10, int1: -1, int2: -2, fizz: "fizz", buzz: "buzz"},
+			expected: []string{"fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz"},
+		},
 	}
 
 	for _, test := range tests {
