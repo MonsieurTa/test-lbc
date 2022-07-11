@@ -24,8 +24,8 @@ func TestConfig(t *testing.T) {
 				Limit: 15,
 				Int1:  0,
 				Int2:  0,
-				Fizz:  "fizz",
-				Buzz:  "buzz",
+				Str1:  "fizz",
+				Str2:  "buzz",
 			},
 			expected: "int1 can't 0",
 		},
@@ -34,8 +34,8 @@ func TestConfig(t *testing.T) {
 				Limit: 15,
 				Int1:  1,
 				Int2:  0,
-				Fizz:  "fizz",
-				Buzz:  "buzz",
+				Str1:  "fizz",
+				Str2:  "buzz",
 			},
 			expected: "int2 can't 0",
 		},
@@ -51,7 +51,7 @@ func TestConfig(t *testing.T) {
 }
 
 func TestFizzBuzz(t *testing.T) {
-	service, err := New(Config{Limit: 1, Int1: 1, Int2: 1, Fizz: "test", Buzz: "ok"})
+	service, err := New(Config{Limit: 1, Int1: 1, Int2: 1, Str1: "test", Str2: "ok"})
 
 	assert.NotNil(t, service)
 	assert.Nil(t, err)
@@ -67,8 +67,8 @@ func TestFizzBuzzGenerate(t *testing.T) {
 				Limit: 15,
 				Int1:  3,
 				Int2:  5,
-				Fizz:  "fizz",
-				Buzz:  "buzz",
+				Str1:  "fizz",
+				Str2:  "buzz",
 			},
 			expected: []string{"1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz", "11", "fizz", "13", "14", "fizzbuzz"},
 		},
@@ -77,8 +77,8 @@ func TestFizzBuzzGenerate(t *testing.T) {
 				Limit: 10,
 				Int1:  2,
 				Int2:  2,
-				Fizz:  "fizz",
-				Buzz:  "buzz",
+				Str1:  "fizz",
+				Str2:  "buzz",
 			},
 			expected: []string{"1", "fizzbuzz", "3", "fizzbuzz", "5", "fizzbuzz", "7", "fizzbuzz", "9", "fizzbuzz"},
 		},
@@ -87,8 +87,8 @@ func TestFizzBuzzGenerate(t *testing.T) {
 				Limit: 10,
 				Int1:  1,
 				Int2:  2,
-				Fizz:  "fizz",
-				Buzz:  "buzz",
+				Str1:  "fizz",
+				Str2:  "buzz",
 			},
 			expected: []string{"fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz"},
 		},
@@ -97,8 +97,8 @@ func TestFizzBuzzGenerate(t *testing.T) {
 				Limit: 10,
 				Int1:  1,
 				Int2:  2,
-				Fizz:  "",
-				Buzz:  "",
+				Str1:  "",
+				Str2:  "",
 			},
 			expected: []string{"", "", "", "", "", "", "", "", "", ""},
 		},
@@ -107,8 +107,8 @@ func TestFizzBuzzGenerate(t *testing.T) {
 				Limit: 10,
 				Int1:  20,
 				Int2:  20,
-				Fizz:  "",
-				Buzz:  "",
+				Str1:  "",
+				Str2:  "",
 			},
 			expected: []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
 		},
@@ -117,8 +117,8 @@ func TestFizzBuzzGenerate(t *testing.T) {
 				Limit: 10,
 				Int1:  -1,
 				Int2:  -2,
-				Fizz:  "fizz",
-				Buzz:  "buzz",
+				Str1:  "fizz",
+				Str2:  "buzz",
 			},
 			expected: []string{"fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz", "fizz", "fizzbuzz"},
 		},
@@ -134,3 +134,19 @@ func TestFizzBuzzGenerate(t *testing.T) {
 		assert.Equal(t, test.expected, actual)
 	}
 }
+
+// 5.6sec on Intel(R) Core(TM) i5-6300U CPU @ 2.40GHz
+// func TestGenerateHighLimit(t *testing.T) {
+// 	service, err := New(Config{
+// 		Limit: 100_000_000,
+// 		Int1:  3,
+// 		Int2:  5,
+// 		Str1:  "fizz",
+// 		Str2:  "buzz",
+// 	})
+
+// 	assert.NotNil(t, service)
+// 	assert.Nil(t, err)
+
+// 	service.Generate()
+// }
