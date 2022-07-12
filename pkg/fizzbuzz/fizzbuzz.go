@@ -28,10 +28,10 @@ func (cfg *Config) valid() error {
 		return fmt.Errorf("limit is too big. CONFIG_MAX_LIMIT=%d", CONFIG_MAX_LIMIT)
 	}
 	if cfg.Int1 == 0 {
-		return errors.New("int1 can't 0")
+		return errors.New("int1 can't be 0")
 	}
 	if cfg.Int2 == 0 {
-		return errors.New("int2 can't 0")
+		return errors.New("int2 can't be 0")
 	}
 	if len(cfg.Str1) > CONFIG_MAX_STR_LEN {
 		return fmt.Errorf("str1 is too long. CONFIG_MAX_STR_LEN=%d", CONFIG_MAX_STR_LEN)
