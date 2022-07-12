@@ -22,16 +22,16 @@ func (memo ParamsByHitCount) MostUsed() (string, int) {
 	return maxKey, maxCount
 }
 
-type Cache struct {
+type MemCache struct {
 	mutex            sync.Mutex
 	paramsByHitCount ParamsByHitCount
 }
 
-func NewCache() Cache {
-	return Cache{paramsByHitCount: ParamsByHitCount{}}
+func NewMemCache() MemCache {
+	return MemCache{paramsByHitCount: ParamsByHitCount{}}
 }
 
-func (c *Cache) IncrementMostUsedRequest(key string) {
+func (c *MemCache) IncrementMostUsedRequest(key string) {
 	defer c.mutex.Unlock()
 	c.mutex.Lock()
 
@@ -45,7 +45,7 @@ func (c *Cache) IncrementMostUsedRequest(key string) {
 
 var decoder = schema.NewDecoder()
 
-func (c *Cache) FizzBuzz(w http.ResponseWriter, req *http.Request) {
+func (c *MemCache) FizzBuzz(w http.ResponseWriter, req *http.Request) {
 	var cfg fizzbuzz.Config
 
 	err := decoder.Decode(&cfg, req.URL.Query())
@@ -62,8 +62,8 @@ func (c *Cache) FizzBuzz(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	rv := service.Generate()
-	err = json.NewEncoder(w).Encode(rv)
+	rv := service.String()
+	w.Write([]byte(rv))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -73,20 +73,22 @@ func (c *Cache) FizzBuzz(w http.ResponseWriter, req *http.Request) {
 	c.IncrementMostUsedRequest(string(b))
 }
 
-func (c *Cache) Stats(w http.ResponseWriter, req *http.Request) {
+type StatsResponse struct {
+	Count  int             `json:"count"`
+	Params fizzbuzz.Config `json:"params"`
+}
+
+func (c *MemCache) Stats(w http.ResponseWriter, req *http.Request) {
 	var cfg fizzbuzz.Config
 
 	params, count := c.paramsByHitCount.MostUsed()
 	json.Unmarshal([]byte(params), &cfg)
 
-	json.NewEncoder(w).Encode(struct {
-		Count  int             `json:"count"`
-		Params fizzbuzz.Config `json:"params"`
-	}{count, cfg})
+	json.NewEncoder(w).Encode(StatsResponse{count, cfg})
 }
 
 func main() {
-	withCache := NewCache()
+	withCache := NewMemCache()
 
 	http.HandleFunc("/fizzbuzz", withCache.FizzBuzz)
 	http.HandleFunc("/stats", withCache.Stats)
