@@ -36,6 +36,5 @@ func BenchmarkFizzBuzz_Json_With_High_Limit(b *testing.B) {
 	assert.NotNil(b, service)
 	assert.Nil(b, err)
 
-	// already JSON formatted
 	service.Json()
 }
