@@ -112,7 +112,7 @@ func TestAPI_Returns_Bad_Request(t *testing.T) {
 		}
 
 		req.URL.RawQuery = encodeQueryParams([]QueryParam{
-			{"limit", "100001"},
+			{"limit", "5000001"},
 			{"int1", "3"},
 			{"int2", "5"},
 			{"str1", "fizz"},
@@ -120,7 +120,7 @@ func TestAPI_Returns_Bad_Request(t *testing.T) {
 		})
 		memCache.FizzBuzz(recorder, req)
 		assert.Equal(t, http.StatusBadRequest, recorder.Code)
-		assert.Equal(t, "limit is too big. CONFIG_MAX_LIMIT=100000", recorder.Body.String())
+		assert.Equal(t, "limit is too big. CONFIG_MAX_LIMIT=5000000", recorder.Body.String())
 	})
 
 	t.Run("missing parameters", func(t *testing.T) {
