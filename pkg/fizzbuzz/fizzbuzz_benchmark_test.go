@@ -1,14 +1,17 @@
 package fizzbuzz
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func BenchmarFizzBuzz_Array_With_High_Limit(b *testing.B) {
+var LIMIT = 5_000_000
+
+func BenchmarkFizzBuzz_Array_With_High_Limit(b *testing.B) {
 	service, err := New(Config{
-		Limit: 100_000_000,
+		Limit: LIMIT,
 		Int1:  3,
 		Int2:  5,
 		Str1:  "fizz",
@@ -18,12 +21,12 @@ func BenchmarFizzBuzz_Array_With_High_Limit(b *testing.B) {
 	assert.NotNil(b, service)
 	assert.Nil(b, err)
 
-	service.Array()
+	json.Marshal(service.Array())
 }
 
-func BenchmarFizzBuzz_String_With_High_Limit(b *testing.B) {
+func BenchmarkFizzBuzz_Json_With_High_Limit(b *testing.B) {
 	service, err := New(Config{
-		Limit: 100_000_000,
+		Limit: LIMIT,
 		Int1:  3,
 		Int2:  5,
 		Str1:  "fizz",
@@ -33,5 +36,6 @@ func BenchmarFizzBuzz_String_With_High_Limit(b *testing.B) {
 	assert.NotNil(b, service)
 	assert.Nil(b, err)
 
-	service.String()
+	// already JSON formatted
+	service.Json()
 }
