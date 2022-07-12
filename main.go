@@ -91,6 +91,7 @@ func (c *MemCache) Stats(w http.ResponseWriter, req *http.Request) {
 	params, count := c.paramsByHitCount.MostUsed()
 	json.Unmarshal([]byte(params), &cfg)
 
+	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(StatsResponse{count, cfg})
 }
 
