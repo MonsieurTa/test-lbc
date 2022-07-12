@@ -7,12 +7,52 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFizzBuzz_With_Empty_Config(t *testing.T) {
-	service, err := New(Config{})
+func TestConfig_Returns_Expected_Error(t *testing.T) {
+	tests := []struct {
+		cfg      Config
+		expected string
+	}{
+		{
+			cfg:      Config{},
+			expected: "limit must be greater than 0",
+		},
+		{
+			cfg:      Config{Limit: 0},
+			expected: "limit must be greater than 0",
+		},
+		{
+			cfg:      Config{Limit: -1},
+			expected: "limit must be greater than 0",
+		},
+		{
+			cfg: Config{
+				Limit: 15,
+				Int1:  0,
+				Int2:  0,
+				Str1:  "fizz",
+				Str2:  "buzz",
+			},
+			expected: "int1 can't 0",
+		},
+		{
+			cfg: Config{
+				Limit: 15,
+				Int1:  1,
+				Int2:  0,
+				Str1:  "fizz",
+				Str2:  "buzz",
+			},
+			expected: "int2 can't 0",
+		},
+	}
 
-	assert.Nil(t, service)
-	assert.NotNil(t, err)
-	assert.Equal(t, "limit must be greater than 0", err.Error())
+	for _, test := range tests {
+		service, err := New(test.cfg)
+
+		assert.Nil(t, service)
+		assert.Error(t, err)
+		assert.Equal(t, test.expected, err.Error())
+	}
 }
 
 var Tests = []struct {
