@@ -22,6 +22,10 @@ func (memo ParamsByHitCount) MostUsed() (string, int) {
 	return maxKey, maxCount
 }
 
+func (memo ParamsByHitCount) Empty() bool {
+	return len(memo) == 0
+}
+
 type MemCache struct {
 	mutex            sync.Mutex
 	paramsByHitCount ParamsByHitCount
@@ -63,11 +67,9 @@ func (c *MemCache) FizzBuzz(w http.ResponseWriter, req *http.Request) {
 	}
 
 	rv := service.Json()
+	w.Header().Add("Cache-Control", "max-age=31536000")
+	w.Header().Add("Content-Type", "application/json")
 	w.Write([]byte(rv))
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-	}
 
 	b, _ := json.Marshal(&cfg)
 	c.IncrementMostUsedRequest(string(b))
@@ -80,6 +82,11 @@ type StatsResponse struct {
 
 func (c *MemCache) Stats(w http.ResponseWriter, req *http.Request) {
 	var cfg fizzbuzz.Config
+
+	if c.paramsByHitCount.Empty() {
+		w.Write([]byte("No request yet"))
+		return
+	}
 
 	params, count := c.paramsByHitCount.MostUsed()
 	json.Unmarshal([]byte(params), &cfg)
