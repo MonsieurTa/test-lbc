@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -50,13 +51,12 @@ func TestAPI_Returns_A_Valid_JSON(t *testing.T) {
 }
 
 func TestAPI_Returns_Most_Used_Request(t *testing.T) {
-	fizzBuzzRecorder := httptest.NewRecorder()
+	memCache := NewMemCache()
+
 	fizzBuzzReq, err := http.NewRequest("GET", "localhost:8080/fizzbuzz", nil)
 	if err != nil {
 		t.Fatalf("got error: %v", err)
 	}
-
-	memCache := NewMemCache()
 
 	fizzBuzzReq.URL.RawQuery = encodeQueryParams([]QueryParam{
 		{"limit", "15"},
@@ -67,11 +67,13 @@ func TestAPI_Returns_Most_Used_Request(t *testing.T) {
 	})
 
 	for i := 0; i < 1000; i++ {
-		memCache.FizzBuzz(fizzBuzzRecorder, fizzBuzzReq)
-		assert.Equal(t, http.StatusOK, fizzBuzzRecorder.Code)
+		recorder := httptest.NewRecorder()
+		memCache.FizzBuzz(recorder, fizzBuzzReq)
+		assert.Equal(t, http.StatusOK, recorder.Code)
 	}
 
 	for i := 0; i < 100; i++ {
+		recorder := httptest.NewRecorder()
 		fizzBuzzReq.URL.RawQuery = encodeQueryParams([]QueryParam{
 			{"limit", "15"},
 			{"int1", "3"},
@@ -79,19 +81,19 @@ func TestAPI_Returns_Most_Used_Request(t *testing.T) {
 			{"str1", fmt.Sprintf("fizz#%d", i)},
 			{"str2", fmt.Sprintf("buzz#%d", i)},
 		})
-		memCache.FizzBuzz(fizzBuzzRecorder, fizzBuzzReq)
-		assert.Equal(t, http.StatusOK, fizzBuzzRecorder.Code)
+		memCache.FizzBuzz(recorder, fizzBuzzReq)
+		assert.Equal(t, http.StatusOK, recorder.Code)
 	}
 
-	statsRecorder := httptest.NewRecorder()
+	recorder := httptest.NewRecorder()
 	statsReq, err := http.NewRequest("GET", "localhost:8080/stats", nil)
 	if err != nil {
 		t.Fatalf("got error: %v", err)
 	}
-	memCache.Stats(statsRecorder, statsReq)
+	memCache.Stats(recorder, statsReq)
 
 	var response StatsResponse
-	json.Unmarshal(statsRecorder.Body.Bytes(), &response)
+	json.Unmarshal(recorder.Body.Bytes(), &response)
 
 	assert.Equal(t, 1000, response.Count)
 	assert.Equal(t, 15, response.Params.Limit)
@@ -173,4 +175,26 @@ func TestAPI_Returns_Bad_Request(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, recorder.Code)
 		assert.Equal(t, "str2 is too long. CONFIG_MAX_STR_LEN=128", recorder.Body.String())
 	})
+}
+
+func TestAPI_Handles_Multiple_Heavy_Requests(t *testing.T) {
+	memCache := NewMemCache()
+	req, err := http.NewRequest("GET", "localhost:8080/fizzbuzz", nil)
+	if err != nil {
+		t.Fatalf("got error: %v", err)
+	}
+
+	req.URL.RawQuery = encodeQueryParams([]QueryParam{
+		{"limit", strconv.Itoa(LIMIT)},
+		{"int1", "3"},
+		{"int2", "5"},
+		{"str1", "fizz"},
+		{"str2", "buzz"},
+	})
+
+	for i := 0; i < 100; i++ {
+		recorder := httptest.NewRecorder()
+		memCache.FizzBuzz(recorder, req)
+		assert.Equal(t, http.StatusOK, recorder.Code)
+	}
 }
