@@ -12,7 +12,7 @@ func TestFizzBuzz_With_Empty_Config(t *testing.T) {
 
 	assert.Nil(t, service)
 	assert.NotNil(t, err)
-	assert.Equal(t, "limit must be > 0", err.Error())
+	assert.Equal(t, "limit must be greater than 0", err.Error())
 }
 
 var Tests = []struct {
@@ -81,7 +81,7 @@ var Tests = []struct {
 	},
 }
 
-func TestFizzBuzz_Array_With_Valid_Input(t *testing.T) {
+func TestFizzBuzz_Array_With_Valid_Inputs(t *testing.T) {
 	for _, test := range Tests {
 		service, err := New(test.cfg)
 
@@ -93,7 +93,7 @@ func TestFizzBuzz_Array_With_Valid_Input(t *testing.T) {
 	}
 }
 
-func TestFizzBuzz_String_With_Valid_Input(t *testing.T) {
+func TestFizzBuzz_String_With_Valid_Inputs(t *testing.T) {
 	for _, test := range Tests {
 		service, err := New(test.cfg)
 

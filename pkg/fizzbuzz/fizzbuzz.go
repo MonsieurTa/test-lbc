@@ -2,29 +2,42 @@ package fizzbuzz
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 )
 
+var (
+	CONFIG_MAX_LIMIT   = 100_000
+	CONFIG_MAX_STR_LEN = 128
+)
+
 type Config struct {
-	Limit int    `schema:"limit" json:"limit"`
-	Int1  int    `schema:"int1" json:"int1"`
-	Int2  int    `schema:"int2" json:"int2"`
-	Str1  string `schema:"str1" json:"str1"`
-	Str2  string `schema:"str2" json:"str2"`
+	Limit int    `schema:"limit,required" json:"limit"`
+	Int1  int    `schema:"int1,required" json:"int1"`
+	Int2  int    `schema:"int2,required" json:"int2"`
+	Str1  string `schema:"str1,required" json:"str1"`
+	Str2  string `schema:"str2,required" json:"str2"`
 }
 
 func (cfg *Config) valid() error {
 	if cfg.Limit < 1 {
-		return errors.New("limit must be > 0")
+		return errors.New("limit must be greater than 0")
 	}
-
+	if cfg.Limit > CONFIG_MAX_LIMIT {
+		return fmt.Errorf("limit is too big. CONFIG_MAX_LIMIT=%d", CONFIG_MAX_LIMIT)
+	}
 	if cfg.Int1 == 0 {
 		return errors.New("int1 can't 0")
 	}
-
 	if cfg.Int2 == 0 {
 		return errors.New("int2 can't 0")
+	}
+	if len(cfg.Str1) > CONFIG_MAX_STR_LEN {
+		return fmt.Errorf("str1 is too long. CONFIG_MAX_STR_LEN=%d", CONFIG_MAX_STR_LEN)
+	}
+	if len(cfg.Str2) > CONFIG_MAX_STR_LEN {
+		return fmt.Errorf("str2 is too long. CONFIG_MAX_STR_LEN=%d", CONFIG_MAX_STR_LEN)
 	}
 	return nil
 }

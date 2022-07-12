@@ -13,11 +13,11 @@ func TestConfig_Returns_Expected_Error(t *testing.T) {
 	}{
 		{
 			cfg:      Config{Limit: 0},
-			expected: "limit must be > 0",
+			expected: "limit must be greater than 0",
 		},
 		{
 			cfg:      Config{Limit: -1},
-			expected: "limit must be > 0",
+			expected: "limit must be greater than 0",
 		},
 		{
 			cfg: Config{
