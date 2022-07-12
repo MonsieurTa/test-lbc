@@ -62,7 +62,7 @@ func (c *MemCache) FizzBuzz(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	rv := service.String()
+	rv := service.Json()
 	w.Write([]byte(rv))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

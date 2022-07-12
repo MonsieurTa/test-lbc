@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	CONFIG_MAX_LIMIT   = 100_000
+	CONFIG_MAX_LIMIT   = 5_000_000
 	CONFIG_MAX_STR_LEN = 128
 )
 
@@ -65,7 +65,8 @@ func New(cfg Config) (*Service, error) {
 	}, nil
 }
 
-func (s *Service) String() string {
+// Directly format the JSON string instead of using an array of string
+func (s *Service) Json() string {
 	var builder strings.Builder
 
 	builder.WriteRune('[')

@@ -100,7 +100,7 @@ func TestFizzBuzz_String_With_Valid_Inputs(t *testing.T) {
 		assert.NotNil(t, service)
 		assert.Nil(t, err)
 
-		actual := service.String()
+		actual := service.Json()
 
 		expected, err := json.Marshal(test.expected)
 		if err != nil {
